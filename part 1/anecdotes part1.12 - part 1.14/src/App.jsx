@@ -1,5 +1,25 @@
 import { useState } from 'react'
 
+const AnecdoteVoted = ({index, votes, anecdotes, max}) => {
+  if(index != -1 && max != 0){
+    return(
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <p>{anecdotes[index]}</p>
+        <p>votes {votes[index]}</p>
+      </div>
+    )
+  } else {
+    return(
+      <div>
+        <h1>
+          There is no votes
+        </h1>
+      </div>
+    )
+  }
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -28,14 +48,19 @@ const App = () => {
     // Actualiza el estado con la nueva copia del array
     setVotes(votesCopy)
   }
+
+  const maxIndex = votes.indexOf(Math.max(...votes));
+  const max = Math.max(...votes);
   
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p> {anecdotes[selected]} </p>
       <p> haz {votes[selected]} votes</p>
       <button onClick={handleVotesClick}>vote</button>
       <button onClick={handleAnecdotasClick}>next anecdote</button>
+      <AnecdoteVoted index={maxIndex} votes={votes} anecdotes={anecdotes} max={max}/>
     </div>
   )
 }
