@@ -20,19 +20,19 @@ const Content = ({course}) => {
   )
 }
 
-const Total = ({total}) => {
+const Total = ({parts}) => {
+  let total = parts.reduce((total, part) => total + part.exercises, 0);
   return (
     <p>Number of exercises {total}</p>
   )
 }
 
 const Course = ({course}) => {
-  let total = course.parts.reduce((total, part) => total + part.exercises, 0);
   return(
     <div>
       <Header course={course.name} /> 
       <Content course={course.parts} />
-      <Total total={total} />
+      <Total parts={course.parts} />
     </div>
   )
 }
