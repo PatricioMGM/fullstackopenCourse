@@ -9,6 +9,11 @@ const App = () => {
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState('')
+
+  const personsFiltered = filter != ''
+  ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())) 
+  : persons;
 
   const handleAddButton = (event) => {
     event.preventDefault()
@@ -34,6 +39,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <div><p>filter shown with <input  value={filter} onChange={(event) => {setFilter(event.target.value)}} /></p></div>
+      <h2>add a new</h2>
       <form>
         <div>
           name: <input value={newName} onChange={(event) =>{setNewName(event.target.value)}} />
@@ -46,15 +53,14 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person)=>{
-        return (
-          <div key={person.id}>
-            <p>
-              {person.name} {person.number}
-            </p>
-          </div>
-        )
-      })}
+      {personsFiltered.length > 0 
+        ? personsFiltered.map((person) => (
+            <div key={person.id}>
+              <p>{person.name} {person.number}</p>
+            </div>
+          ))
+        : <p>No persons with that name found</p>
+      }
     </div>
   )
 }
