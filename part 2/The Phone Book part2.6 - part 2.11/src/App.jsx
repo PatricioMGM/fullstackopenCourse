@@ -96,7 +96,6 @@ const App = () => {
   }
 
   const handleDeleteButton = (idPerson, person) => {
-    console.log(`Attempting to delete person with ID: ${idPerson}`);
     
     if (window.confirm(`Are you sure you want to delete this person: ${person}?`)) {
       personService
@@ -106,7 +105,6 @@ const App = () => {
           setPersons(persons.filter(p => p.id !== idPerson));
         })
         .catch(error => {
-          console.error('Error deleting person:', error);
           alert(`Failed to delete ${person}. It may have already been removed from the server.`);
         });
     }
