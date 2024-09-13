@@ -24,19 +24,27 @@ const FormToAddNewPeople = ({newName, setNewName, newNumber, setNewNumber, handl
   )
 }
 
-const Person = ({person}) => {
+const DeleteButton = ({handleDeleteButton, idPerson, person}) => {
+  return(
+    <button onClick={ () => handleDeleteButton(idPerson, person)}>
+      delete
+    </button>
+  )
+}
+
+const Person = ({person, handleDeleteButton}) => {
   return(
     <div>
-      <p>{person.name} {person.number}</p>
+      {person.name} {person.number} <DeleteButton handleDeleteButton={handleDeleteButton} idPerson={person.id} person={person.name} />
     </div>
   )
 }
 
-const Numbers = ({personsFiltered}) => {
+const Numbers = ({personsFiltered, handleDeleteButton}) => {
   return(
     personsFiltered.length > 0 
     ? personsFiltered.map((person) => (
-        <Person person={person} key={person.id}/>
+        <Person person={person} handleDeleteButton={handleDeleteButton} key={person.id}/>
       ))
     : <p>No persons with that name found</p>
   )
@@ -87,6 +95,26 @@ const App = () => {
     
   }
 
+  const handleDeleteButton = (idPerson, person) => {
+    console.log(`Attempting to delete person with ID: ${idPerson}`);
+    
+    if (window.confirm(`Are you sure you want to delete this person: ${person}?`)) {
+      personService
+        .delete(idPerson)
+        .then(response => {
+          alert('Successfully deleted');
+          setPersons(persons.filter(p => p.id !== idPerson));
+        })
+        .catch(error => {
+          console.error('Error deleting person:', error);
+          alert(`Failed to delete ${person}. It may have already been removed from the server.`);
+        });
+    }
+  };
+  
+
+
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -94,7 +122,7 @@ const App = () => {
       <h2>add a new</h2>
       <FormToAddNewPeople newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} handleAddButton={handleAddButton} />
       <h2>Numbers</h2>
-      <Numbers personsFiltered={personsFiltered} />
+      <Numbers personsFiltered={personsFiltered} handleDeleteButton={handleDeleteButton} />
     </div>
   )
 }
