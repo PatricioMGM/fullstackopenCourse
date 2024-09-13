@@ -1,5 +1,45 @@
 import { useState } from 'react'
 
+const FilterInput = ({filter, setFilter}) => {
+  return(
+    <div><p>filter shown with <input  value={filter} onChange={(event) => {setFilter(event.target.value)}} /></p></div>
+  )
+}
+
+const FormToAddNewPeople = ({newName, setNewName, newNumber, setNewNumber, handleAddButton}) => {
+  return(
+    <form>
+      <div>
+        name: <input value={newName} onChange={(event) =>{setNewName(event.target.value)}} />
+      </div>
+      <div>
+        number: <input value={newNumber} onChange={(event) => {setNewNumber(event.target.value)}} />
+      </div>
+      <div>
+        <button onClick={handleAddButton} type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
+const Person = ({person}) => {
+  return(
+    <div>
+      <p>{person.name} {person.number}</p>
+    </div>
+  )
+}
+
+const Numbers = ({personsFiltered}) => {
+  return(
+    personsFiltered.length > 0 
+    ? personsFiltered.map((person) => (
+        <Person person={person} key={person.id}/>
+      ))
+    : <p>No persons with that name found</p>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -39,28 +79,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div><p>filter shown with <input  value={filter} onChange={(event) => {setFilter(event.target.value)}} /></p></div>
+      <FilterInput filter={filter} setFilter={setFilter} />
       <h2>add a new</h2>
-      <form>
-        <div>
-          name: <input value={newName} onChange={(event) =>{setNewName(event.target.value)}} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={(event) => {setNewNumber(event.target.value)}} />
-        </div>
-        <div>
-          <button onClick={handleAddButton} type="submit">add</button>
-        </div>
-      </form>
+      <FormToAddNewPeople newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} handleAddButton={handleAddButton} />
       <h2>Numbers</h2>
-      {personsFiltered.length > 0 
-        ? personsFiltered.map((person) => (
-            <div key={person.id}>
-              <p>{person.name} {person.number}</p>
-            </div>
-          ))
-        : <p>No persons with that name found</p>
-      }
+      <Numbers personsFiltered={personsFiltered} />
     </div>
   )
 }
