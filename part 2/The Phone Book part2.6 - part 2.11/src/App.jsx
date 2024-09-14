@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const FilterInput = ({filter, setFilter}) => {
   return(
@@ -60,6 +61,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notification, setNotification] = useState(null);
+
 
   const personsFiltered = filter != ''
   ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())) 
@@ -75,10 +78,12 @@ const App = () => {
             setPersons(persons.map(person => person.id !== personV.id ? person : updatedPerson));
             setNewName('');
             setNewNumber('');
-            alert('number changed successfully')
+            setNotification({message: `Number of ${personV.name} changed successfully`, severity:'success'})
+            setTimeout(() => setNotification(null), 5000)
           })
           .catch(error => {
-            alert(`Failed to update ${newName}. It may have already been removed from the server.`);
+            setNotification({message: `Failed to update ${newName}. It may have already been removed from the server.`, severity:'error'})
+            setTimeout(() => setNotification(null), 5000)
           });
       }
       return;
@@ -102,6 +107,8 @@ const App = () => {
       setPersons(persons.concat(returnedPerson))
       setNewNumber('')
       setNewName('')
+      setNotification({message: 'Person added to the phonebook', severity:'success'})
+      setTimeout(() => setNotification(null), 5000)
     })
     
     
@@ -113,11 +120,13 @@ const App = () => {
       personService
         .delete(idPerson)
         .then(response => {
-          alert('Successfully deleted');
+          setNotification({message: 'Successfully deleted', severity:'success'})
+          setTimeout(() => setNotification(null), 5000)
           setPersons(persons.filter(p => p.id !== idPerson));
         })
         .catch(error => {
-          alert(`Failed to delete ${person}. It may have already been removed from the server.`);
+          setNotification({message: `Failed to delete ${person}. It may have already been removed from the server.`, severity:'error'})
+          setTimeout(() => setNotification(null), 5000)
         });
     }
   };
@@ -127,7 +136,8 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <Notification notification={notification} />
       <FilterInput filter={filter} setFilter={setFilter} />
       <h2>add a new</h2>
       <FormToAddNewPeople newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} handleAddButton={handleAddButton} />
