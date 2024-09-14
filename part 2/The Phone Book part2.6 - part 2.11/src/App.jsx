@@ -67,9 +67,21 @@ const App = () => {
 
   const handleAddButton = (event) => {
     event.preventDefault()
-    if(persons.some((person)=>person.name === newName)){
-      alert(`name ${newName} is already in the phonebook`)
-      return
+    let personV = {};
+    if (persons.some((person) => person.name === newName ? personV = person : null)) {
+      if (window.confirm(`${newName} is already in the phonebook, do you want to replace the phone number?`)) {
+        personService.update(personV.id, { name: newName, number: newNumber, id: personV.id })
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id !== personV.id ? person : updatedPerson));
+            setNewName('');
+            setNewNumber('');
+            alert('number changed successfully')
+          })
+          .catch(error => {
+            alert(`Failed to update ${newName}. It may have already been removed from the server.`);
+          });
+      }
+      return;
     }
     if(persons.some((person) => person.number === newNumber)){
       alert(`number ${newNumber} is already in the phonebook`)
