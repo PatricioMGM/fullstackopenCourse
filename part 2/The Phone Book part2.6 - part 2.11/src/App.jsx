@@ -54,7 +54,8 @@ const Numbers = ({personsFiltered, handleDeleteButton}) => {
 const App = () => {
 
   useEffect(() =>{
-    personService.getAll().then((persons) => setPersons(persons))
+    //add a test for fail
+    personService.getAll().then((persons) => setPersons(persons.concat({name: 'test', number:'test', id: 5})))
   }, [])
 
   const [persons, setPersons] = useState([])
